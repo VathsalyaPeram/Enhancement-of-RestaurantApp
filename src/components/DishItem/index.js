@@ -1,96 +1,100 @@
-import {Component} from 'react'
-import './index.css'
 import CartContext from '../../context/CartContext'
 
-class DishItem extends Component {
-  state = {quantity: 0}
+const DishItem = props => {
+  const {dishDetails} = props
 
-  render() {
-    const {dishDetails} = this.props
-    return (
-      <CartContext.Consumer>
-        {value => {
-          const {
-            addonCat,
-            dishAvailability,
-            dishCurrency,
-            dishCalories,
-            dishDescription,
-            dishImage,
-            dishName,
-            dishPrice,
-            dishType,
-          } = dishDetails
-          const {addItemCart, removeItemCart} = value
-          const {quantity} = this.state
+  const {
+    dish_id: id,
+    dish_name: dishName,
+    dish_price: dishPrice,
+    dish_image: dishImage,
+    dish_currency: dishCurrency,
+    dish_calories: dishCalories,
+    dish_description: dishDescription,
+    dish_Availability: dishAvailability,
+    addonCat,
+    onRemoveItem,
+    onAddItem,
+    quantity,
+  } = dishDetails
 
-          const onIncreamentQuantity = () => {
-            addItemCart({...dishDetails, quantity})
-            this.setState(prevState => ({quantity: prevState.quantity + 1}))
+  return (
+    <CartContext.Consumer>
+      {value => {
+        const {addCartItem} = value
+
+        const onClickAddToCart = () => {
+          addCartItem({...dishDetails, quantity: 1})
+        }
+
+        const onDecrementQuantity = () => {
+          if (quantity > 1) {
+            this.setState(prevState => ({quantity: prevState.quantity - 1}))
           }
+        }
 
-          const onDecreamentQuantity = () => {
-            removeItemCart({...dishDetails, quantity})
+        const onIncrementQuantity = () => {
+          this.setState(prevState => ({quantity: prevState.quantity + 1}))
+        }
 
-            if (quantity > 0) {
-              this.setState(prevState => ({quantity: prevState.quantity - 1}))
-            }
-          }
+        const handleDecrement = () => {
+          onRemoveItem(dishDetails)
+        }
 
-          return (
-            <li className="list-item-container">
-              <div className="veg-or-nonveg-details-description-container">
-                {dishType === 2 ? (
-                  <div className="green-label-container">
-                    <div className="green-dot-container"></div>
-                  </div>
-                ) : (
-                  <div className="red-label-container">
-                    <div className="red-dot-container"></div>
-                  </div>
-                )}
-                <div className="description-details-container">
-                  <h1 className="dish-name">{dishName}</h1>
-                  <p className="dish-price">
-                    {dishCurrency} {dishPrice}
-                  </p>
-                  <p className="dish-description">{dishDescription}</p>
-                  {dishAvailability ? (
-                    <div className="increase-decrease-btn-container">
-                      <button
-                        className="quantity-btn"
-                        type="button"
-                        onClick={onDecreamentQuantity}
-                      >
-                        -
-                      </button>
-                      <p className="qantity">{quantity}</p>
-                      <button
-                        className="quantity-btn"
-                        type="button"
-                        onClick={onIncreamentQuantity}
-                      >
-                        +
-                      </button>
-                    </div>
-                  ) : (
-                    <p className="not-available-text">Not available</p>
-                  )}
-                  {addonCat.length !== 0 ? (
-                    <p className="custom-text">Customizations available</p>
-                  ) : (
-                    ''
-                  )}
+        const handleIncrement = () => {
+          onAddItem(dishDetails)
+        }
+
+        return (
+          <li className="dish-item">
+            <div className="dish-info">
+              <p className="dish-name">{dishName}</p>
+              <p className="dish-price">
+                {dishCurrency} {dishPrice}
+              </p>
+              <p className="dish-description">{dishDescription}</p>
+              {dishAvailability > 0 ? (
+                <div className="quantity-controls">
+                  <button
+                    type="button"
+                    className="control-button"
+                    onClick={() => onDecrementQuantity}
+                  >
+                    -
+                  </button>
+                  <p>{quantity}</p>
+
+                  <button
+                    type="button"
+                    className="control-button"
+                    onClick={() => onIncrementQuantity}
+                  >
+                    +
+                  </button>
                 </div>
-              </div>
-              <p className="dish-calories">{dishCalories} calories</p>
-              <img src={dishImage} className="dish-image" />
-            </li>
-          )
-        }}
-      </CartContext.Consumer>
-    )
-  }
+              ) : (
+                <p className="not-available">Not available</p>
+              )}
+              {dishAvailability > 0 ? (
+                <button
+                  type="button"
+                  className="button add-to-cart-btn"
+                  onClick={() => onClickAddToCart(dishDetails)}
+                >
+                  ADD TO CART
+                </button>
+              ) : null}
+              {addonCat.length > 0 && (
+                <p className="customizations">Customizations available</p>
+              )}
+            </div>
+            <p className="dish-calories">{dishCalories} calories</p>
+            <img src={dishImage} alt={dishName} className="dish-image" />
+          </li>
+        )
+      }}
+    </CartContext.Consumer>
+  )
 }
 
 export default DishItem

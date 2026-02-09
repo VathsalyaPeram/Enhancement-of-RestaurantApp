@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react'
 import Header from '../Header'
 import Category from '../Category'
-import Dish from '../Dish'
+import DishItem from '../DishItem'
 
 const Restaurant = () => {
   const [isLoading, setIsLoading] = useState(true)
@@ -76,7 +76,7 @@ const Restaurant = () => {
     return (
       <ul className="dish-list">
         {activeCategoryData.category_dishes.map(dish => (
-          <Dish
+          <DishItem
             key={dish.dish_id}
             dishDetails={dish}
             onAddItem={handleAddItem}

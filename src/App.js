@@ -1,161 +1,84 @@
-import './App.css'
-import {Component} from 'react'
-import Header from './components/Header'
-import TabListItem from './components/TabListItem'
-import DishItem from './components/DishItem'
+import {useState, Component} from 'react'
+import {BrowserRouter, Route, Switch, Redirect} from 'react-router-dom'
+import Login from './components/Login'
+import Restaurant from './components/Restaurant'
+import Home from './components/Home'
+import Cart from './components/Cart'
+import ProtectedRoute from './components/ProtectedRoute'
 import CartContext from './context/CartContext'
 
-import Loader from 'react-loader-spinner'
-import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
-
-const apisStatus = {
-  initial: 'INITIAL',
-  inProgress: 'INPROGRESS',
-  success: 'SUCCESS',
-}
-
 class App extends Component {
-  state = {
-    activeApiStatus: apisStatus.initial,
-    activeCategoryId: '11',
-    dishesList: [],
-    cartList: [],
-    restaurantName: '',
-  }
-  componentDidMount() {
-    this.getDishesList()
+  state = {cartList: [], setCartList: []}
+
+  //   addCartItem = dish => {
+  //     this.setState(prevState => {
+  //       const item = prevState.cartList.find(
+  //         each => each.dish_id === dish.dish_id,
+  //       )
+  //       if (item) {
+  //         return {
+  //           cartList: prevState.cartList.map(each =>
+  //             each.dish_id === dish.dish_id
+  //               ? {...each, quantity: each.quantity + dish.quantity}
+  //               : each,
+  //           ),
+  //         }
+  //       }
+  //       return {cartList: [...prevState.cartList, dish]}
+  //     })
+  //   }
+
+  addCartItem = dish => {
+    const {cartList} = this.state
+    const productObject = cartList.find(
+      eachCartItem => eachCartItem.id === dish.id,
+    )
+
+    if (productObject) {
+      this.setState(prevState => ({
+        cartList: prevState.cartList.map(eachCartItem => {
+          if (productObject.id === eachCartItem.id) {
+            const updatedQuantity = eachCartItem.quantity + dish.quantity
+
+            return {...eachCartItem, quantity: updatedQuantity}
+          }
+
+          return eachCartItem
+        }),
+      }))
+    } else {
+      const updatedCartList = [...cartList, dish]
+
+      this.setState({cartList: updatedCartList})
+    }
   }
 
-  getDishesList = async () => {
-    this.setState({activeApiStatus: apisStatus.inProgress})
-    const url =
-      'https://apis2.ccbp.in/restaurant-app/restaurant-menu-list-details'
-    const response = await fetch(url)
-    const data = await response.json()
-    console.log(data)
-    const updatedList = data[0].table_menu_list.map(eachObj => ({
-      menuCategory: eachObj.menu_category,
-      menuCategoryId: eachObj.menu_category_id,
-      menuCategoryImage: eachObj.menu_category_image,
-      categoryDishes: eachObj.category_dishes.map(each => ({
-        addonCat: each.addonCat,
-        dishAvailability: each.dish_Availability,
-        dishType: each.dish_Type,
-        dishCalories: each.dish_calories,
-        dishCurrency: each.dish_currency,
-        dishDescription: each.dish_description,
-        dishId: each.dish_id,
-        dishImage: each.dish_image,
-        dishName: each.dish_name,
-        dishPrice: each.dish_price,
-      })),
+  removeCartItem = dish => {
+    this.setState(prevState => ({
+      cartList: prevState.cartList.filter(each => each.dish !== dish),
     }))
-    this.setState({
-      restaurantName: data[0].restaurant_name,
-      dishesList: updatedList,
-      activeApiStatus: apisStatus.success,
-    })
   }
 
-  onChangeActiveTabId = menuCategoryId => {
-    this.setState({activeCategoryId: menuCategoryId})
+  removeAllCartItems = () => {
+    this.setState({cartList: []})
   }
 
-  renderLoadingView = () => {
-    return (
-      <div>
-        <Loader type="TailSpin" color="#00BFFF" height={50} width={50} />
-      </div>
-    )
+  incrementCartItemQuantity = id => {
+    this.setState(prevState => ({
+      cartList: prevState.cartList.map(item =>
+        item.id === id ? {...item, quantity: item.quantity + 1} : item,
+      ),
+    }))
   }
 
-  renderSuccessView = () => {
-    const {dishesList, activeCategoryId, restaurantName} = this.state
-
-    const categoryWiseObj = dishesList.find(
-      each => each.menuCategoryId === activeCategoryId,
-    )
-    const {categoryDishes} = categoryWiseObj
-
-    return (
-      <div className="main-container">
-        <Header restoName={restaurantName} />
-        <div className="content-container">
-          <ul className="tabs-list-container">
-            {dishesList.map(eachItem => (
-              <TabListItem
-                key={eachItem.menuCategoryId}
-                eachTabItemDetails={eachItem}
-                activeCategoryId={activeCategoryId === eachItem.menuCategoryId}
-                onChangeActiveTabId={this.onChangeActiveTabId}
-              />
-            ))}
-          </ul>
-          <ul className="dish-list-container">
-            {categoryDishes.map(eachDishItem => (
-              <DishItem key={eachDishItem.dishId} dishDetails={eachDishItem} />
-            ))}
-          </ul>
-        </div>
-      </div>
-    )
-  }
-
-  renderDishesItemCarts = () => {
-    const {activeApiStatus} = this.state
-    switch (activeApiStatus) {
-      case apisStatus.inProgress:
-        return this.renderLoadingView()
-      case apisStatus.success:
-        return this.renderSuccessView()
-      default:
-        return null
-    }
-  }
-
-  deleteCartItem = dishId => {
-    const {cartList} = this.state
-    const updatedList = cartList.filter(each => each.dishId !== dishId)
-    this.setState({cartList: updatedList})
-  }
-
-  addItemCart = dish => {
-    const {cartList} = this.state
-    const dishObject = cartList.find(each => each.dishId === dish.dishId)
-    console.log(cartList)
-    if (dishObject) {
-      this.setState(prevState => ({
-        cartList: prevState.cartList.map(eachItem => {
-          if (dishObject.dishId === eachItem.dishId) {
-            const updatedQuantity = dishObject.quantity + 1
-            return {...eachItem, quantity: updatedQuantity}
-          }
-          return eachItem
-        }),
-      }))
-    } else {
-      const updatedList = [...cartList, dish]
-      this.setState({cartList: updatedList})
-    }
-  }
-
-  removeItemCart = dish => {
-    const {cartList} = this.state
-    const dishObj = cartList.find(each => each.dishId === dish.dishId)
-    console.log(dishObj)
-    if (dishObj.quantity > 0) {
-      this.setState(prevState => ({
-        cartList: prevState.cartList.map(each => {
-          if (dish.dishId === each.dishId) {
-            const updatedQuantity = each.quantity - 1
-            return {...each, quantity: updatedQuantity}
-          }
-          return each
-        }),
-      }))
-    } else {
-      this.deleteCartItem(dish.dishId)
-    }
+  decrementCartItemQuantity = id => {
+    this.setState(prevState => ({
+      cartList: prevState.cartList
+        .map(item =>
+          item.id === id ? {...item, quantity: item.quantity - 1} : item,
+        )
+        .filter(item => item.quantity > 0),
+    }))
   }
 
   render() {
@@ -164,15 +87,24 @@ class App extends Component {
       <CartContext.Provider
         value={{
           cartList,
-          addItemCart: this.addItemCart,
-          removeItemCart: this.removeItemCart,
-          deleteCartItem: this.deleteCartItem,
+          addCartItem: this.addCartItem,
+          removeCartItem: this.removeCartItem,
+          removeAllCartItems: this.removeAllCartItems,
+          incrementCartItemQuantity: this.incrementCartItemQuantity,
+          decrementCartItemQuantity: this.decrementCartItemQuantity,
         }}
       >
-        <>{this.renderDishesItemCarts()}</>
+        <BrowserRouter>
+          <Switch>
+            <Route exact path="/login" component={Login} />
+            <ProtectedRoute exact path="/" component={Restaurant} />
+            <ProtectedRoute exact path="/" component={Home} />
+            <ProtectedRoute exact path="/cart" component={Cart} />
+            <Redirect to="/login" />
+          </Switch>
+        </BrowserRouter>
       </CartContext.Provider>
     )
   }
 }
-
 export default App
