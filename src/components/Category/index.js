@@ -1,8 +1,8 @@
-const Category = ({categories, activeCategory, setActiveCategory}) => (
+const Category = ({categories = [], activeCategory, setActiveCategory}) => (
   <div className="category-tabs">
     {categories.map(category => (
       <button
-        type="button" // Important for button best practices
+        type="button"
         key={category.menu_category_id}
         className={`tab-item ${
           category.menu_category === activeCategory ? 'active' : ''

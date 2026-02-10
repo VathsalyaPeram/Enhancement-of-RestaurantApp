@@ -166,7 +166,7 @@ import CartContext from '../../context/CartContext'
 
 const CartItem = props => {
   const {cartItemDetails} = props
-  const {id, dishName, dishImage, quantity} = cartItemDetails
+  const {dishId, dishName, dishImage, cartCount} = cartItemDetails
 
   return (
     <CartContext.Consumer>
@@ -178,13 +178,19 @@ const CartItem = props => {
             <img src={dishImage} alt={dishName} />
             <p>{dishName}</p>
 
-            <button type="button" onClick={() => decrementCartItemQuantity(id)}>
+            <button
+              type="button"
+              onClick={() => decrementCartItemQuantity(dishId)}
+            >
               -
             </button>
 
-            <p>{quantity}</p>
+            <p>{cartCount}</p>
 
-            <button type="button" onClick={() => incrementCartItemQuantity(id)}>
+            <button
+              type="button"
+              onClick={() => incrementCartItemQuantity(dishId)}
+            >
               +
             </button>
           </li>

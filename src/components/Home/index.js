@@ -1,16 +1,17 @@
 import {useState, useEffect, useContext} from 'react'
 import Loader from 'react-loader-spinner'
 import {useHistory} from 'react-router-dom'
+
 import Header from '../Header'
-import DishItem from '../DishItem'
 import Category from '../Category'
+import DishItem from '../DishItem'
 import CartContext from '../../context/CartContext'
 
 const apiStatusConstants = {
   initial: 'INITIAL',
+  loading: 'LOADING',
   success: 'SUCCESS',
   failure: 'FAILURE',
-  loading: 'LOADING',
 }
 
 const Home = () => {
@@ -29,38 +30,38 @@ const Home = () => {
       const response = await fetch(
         'https://apis2.ccbp.in/restaurant-app/restaurant-menu-list-details',
       )
-      const data = await response.json()
 
-      if (response.ok) {
-        const restaurant = data[0]
-
-        setRestaurantInfo({
-          restaurantName: restaurant.restaurant_name,
-          restaurantImage: restaurant.restaurant_image,
-          branchName: restaurant.branch_name,
-        })
-
-        setMenuList(restaurant.table_menu_list)
-        setActiveCategory(restaurant.table_menu_list[0].menu_category)
-        setApiStatus(apiStatusConstants.success)
-      } else {
+      if (!response.ok) {
         setApiStatus(apiStatusConstants.failure)
+        return
       }
+
+      const data = await response.json()
+      const restaurant = data[0]
+
+      setRestaurantInfo({
+        restaurantName: restaurant.restaurant_name,
+        restaurantImage: restaurant.restaurant_image,
+        branchName: restaurant.branch_name,
+      })
+
+      setMenuList(restaurant.table_menu_list)
+
+      if (restaurant.table_menu_list.length > 0) {
+        setActiveCategory(restaurant.table_menu_list[0].menu_category)
+      }
+
+      setApiStatus(apiStatusConstants.success)
     }
 
     fetchRestaurantDetails()
   }, [])
 
-  const onClickCart = () => {
-    history.push('/cart')
-  }
-
-  const onClickRestaurantName = () => {
-    history.push('/')
-  }
+  const onClickCart = () => history.push('/cart')
+  const onClickRestaurantName = () => history.push('/')
 
   const renderLoadingView = () => (
-    <div>
+    <div className="loader-container" data-testid="loader">
       <Loader type="ThreeDots" color="#f7931e" height={50} width={50} />
     </div>
   )
@@ -74,6 +75,10 @@ const Home = () => {
       each => each.menu_category === activeCategory,
     )
 
+    if (!activeMenu) {
+      return null
+    }
+
     return (
       <>
         <Header
@@ -82,32 +87,19 @@ const Home = () => {
           branchName={branchName}
           onClickCart={onClickCart}
           onClickRestaurantName={onClickRestaurantName}
+          cartCount={cartList.length}
         />
 
-        <Category />
-        <ul className="table_menu_list">
-          {menuList.map(each => (
-            <li key={each.menu_category_id}>
-              <button
-                type="button"
-                className={
-                  activeCategory === each.menu_category
-                    ? 'active-category'
-                    : 'category-button'
-                }
-                onClick={() => setActiveCategory(each.menu_category)}
-              >
-                {each.menu_category}
-              </button>
-            </li>
-          ))}
-        </ul>
+        <Category
+          categories={menuList}
+          activeCategory={activeCategory}
+          setActiveCategory={setActiveCategory}
+        />
 
-        {/* DISHES */}
         <ul className="category_dishes">
           {activeMenu.category_dishes.map(dish => (
             <DishItem
-              key={dish.dish_id}
+              key={dish.dishId}
               dishDetails={dish}
               addCartItem={addCartItem}
               cartList={cartList}

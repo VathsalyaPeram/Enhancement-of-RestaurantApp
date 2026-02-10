@@ -87,6 +87,9 @@ class Login extends Component {
     const {showSubmitError, errorMsg} = this.state
     return (
       <div className="login-form-container">
+        <div>
+          <h1 className="restaurant-name">UNI Resto Cafe</h1>
+        </div>
         <form className="form-container" onSubmit={this.submitForm}>
           <div className="input-container">{this.renderUsernameField()}</div>
           <div className="input-container">{this.renderPasswordField()}</div>

@@ -28,11 +28,11 @@ const Restaurant = () => {
   }, [])
 
   const handleAddItem = dish => {
-    const existingItem = cartItems.find(item => item.dish_id === dish.dish_id)
+    const existingItem = cartItems.find(item => item.dishId === dish.dishId)
     if (existingItem) {
       setCartItems(
         cartItems.map(item =>
-          item.dish_id === dish.dish_id
+          item.dishId === dish.dishId
             ? {...item, quantity: item.quantity + 1}
             : item,
         ),
@@ -43,14 +43,14 @@ const Restaurant = () => {
   }
 
   const handleRemoveItem = dish => {
-    const existingItem = cartItems.find(item => item.dish_id === dish.dish_id)
+    const existingItem = cartItems.find(item => item.dishId === dish.dishId)
     if (existingItem) {
       if (existingItem.quantity === 1) {
-        setCartItems(cartItems.filter(item => item.dish_id !== dish.dish_id))
+        setCartItems(cartItems.filter(item => item.dishId !== dish.dishId))
       } else {
         setCartItems(
           cartItems.map(item =>
-            item.dish_id === dish.dish_id
+            item.dishId === dish.dishId
               ? {...item, quantity: item.quantity - 1}
               : item,
           ),
@@ -60,7 +60,7 @@ const Restaurant = () => {
   }
 
   const getDishQuantity = dishId => {
-    const item = cartItems.find(cartItem => cartItem.dish_id === dishId)
+    const item = cartItems.find(cartItem => cartItem.dishId === dishId)
     return item ? item.quantity : 0
   }
 
@@ -77,11 +77,11 @@ const Restaurant = () => {
       <ul className="dish-list">
         {activeCategoryData.category_dishes.map(dish => (
           <DishItem
-            key={dish.dish_id}
+            key={dish.dishId}
             dishDetails={dish}
             onAddItem={handleAddItem}
             onRemoveItem={handleRemoveItem}
-            quantity={getDishQuantity(dish.dish_id)}
+            quantity={getDishQuantity(dish.dishId)}
           />
         ))}
       </ul>

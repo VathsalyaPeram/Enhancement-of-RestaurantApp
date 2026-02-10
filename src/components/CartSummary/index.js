@@ -3,10 +3,10 @@ import CartContext from '../../context/CartContext'
 const CartSummary = () => (
   <CartContext.Consumer>
     {value => {
-      const {cartList} = value
+      const {cartList, quantity, dishPrice} = value
       const items = cartList.length
       const totalPrice = cartList.reduce(
-        (acc, item) => acc + item.quantity * item.price,
+        (acc, item) => acc + item.quantity * item.dishPrice,
         0,
       )
       return (

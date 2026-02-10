@@ -4,7 +4,7 @@ const DishItem = props => {
   const {dishDetails} = props
 
   const {
-    dish_id: id,
+    dish_id: dishId,
     dish_name: dishName,
     dish_price: dishPrice,
     dish_image: dishImage,

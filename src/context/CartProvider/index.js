@@ -1,5 +1,5 @@
 import {Component} from 'react'
-import CartContext from "./CartContext"
+import CartContext from './CartContext'
 
 class CartProvider extends Component {
   state = {

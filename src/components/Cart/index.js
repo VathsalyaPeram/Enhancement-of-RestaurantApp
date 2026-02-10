@@ -66,6 +66,7 @@ const Cart = () => (
         decrementCartItemQuantity,
         dishImage,
         dishName,
+        dishCalories,
       } = value
 
       if (cartList.length === 0) {
@@ -100,13 +101,17 @@ const Cart = () => (
                 <button>Checkout</button>
                 <ul>
                   {cartList.map(item => (
-                    <li key={item.id}>
-                      <img src={dishImage} alt={item.name} />
-                      <p>{dishName}</p>
+                    <li key={item.dishId}>
+                      <p className="dish-calories">{dishCalories} calories</p>
+                      <img
+                        src={item.dishImage}
+                        alt={item.dishName}
+                        className="dish-image"
+                      />
 
                       <button
                         type="button"
-                        onClick={() => decrementCartItemQuantity(item.id)}
+                        onClick={() => decrementCartItemQuantity(item.dishId)}
                       >
                         -
                       </button>
@@ -115,14 +120,19 @@ const Cart = () => (
 
                       <button
                         type="button"
-                        onClick={() => incrementCartItemQuantity(item.id)}
+                        onClick={() => incrementCartItemQuantity(item.dishId)}
                       >
                         +
                       </button>
+                      <p className="dish-calories">{dishCalories} calories</p>
+                      <img
+                        src={dishImage}
+                        alt={dishName}
+                        className="dish-image"
+                      />
                     </li>
                   ))}
                 </ul>
-                <CartListView />
                 <CartSummary />
                 {/* TODO: Add your code for Cart Summary here */}
               </div>

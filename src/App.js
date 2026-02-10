@@ -8,36 +8,18 @@ import ProtectedRoute from './components/ProtectedRoute'
 import CartContext from './context/CartContext'
 
 class App extends Component {
-  state = {cartList: [], setCartList: []}
-
-  //   addCartItem = dish => {
-  //     this.setState(prevState => {
-  //       const item = prevState.cartList.find(
-  //         each => each.dish_id === dish.dish_id,
-  //       )
-  //       if (item) {
-  //         return {
-  //           cartList: prevState.cartList.map(each =>
-  //             each.dish_id === dish.dish_id
-  //               ? {...each, quantity: each.quantity + dish.quantity}
-  //               : each,
-  //           ),
-  //         }
-  //       }
-  //       return {cartList: [...prevState.cartList, dish]}
-  //     })
-  //   }
+  state = {cartList: []}
 
   addCartItem = dish => {
     const {cartList} = this.state
-    const productObject = cartList.find(
-      eachCartItem => eachCartItem.id === dish.id,
+    const dishObject = cartList.find(
+      eachCartItem => eachCartItem.dishId === dish.dishId,
     )
 
-    if (productObject) {
+    if (dishObject) {
       this.setState(prevState => ({
         cartList: prevState.cartList.map(eachCartItem => {
-          if (productObject.id === eachCartItem.id) {
+          if (dishObject.dishId === eachCartItem.dishId) {
             const updatedQuantity = eachCartItem.quantity + dish.quantity
 
             return {...eachCartItem, quantity: updatedQuantity}
@@ -63,19 +45,21 @@ class App extends Component {
     this.setState({cartList: []})
   }
 
-  incrementCartItemQuantity = id => {
+  incrementCartItemQuantity = dishId => {
     this.setState(prevState => ({
       cartList: prevState.cartList.map(item =>
-        item.id === id ? {...item, quantity: item.quantity + 1} : item,
+        item.dishId === dishId ? {...item, quantity: item.quantity + 1} : item,
       ),
     }))
   }
 
-  decrementCartItemQuantity = id => {
+  decrementCartItemQuantity = dishId => {
     this.setState(prevState => ({
       cartList: prevState.cartList
         .map(item =>
-          item.id === id ? {...item, quantity: item.quantity - 1} : item,
+          item.dishId === dishId
+            ? {...item, quantity: item.quantity - 1}
+            : item,
         )
         .filter(item => item.quantity > 0),
     }))
@@ -96,11 +80,10 @@ class App extends Component {
       >
         <BrowserRouter>
           <Switch>
-            <Route exact path="/login" component={Login} />
-            <ProtectedRoute exact path="/" component={Restaurant} />
-            <ProtectedRoute exact path="/" component={Home} />
-            <ProtectedRoute exact path="/cart" component={Cart} />
-            <Redirect to="/login" />
+            <Route exact path='/login' component={Login} />
+            <ProtectedRoute exact path='/' component={Home} />
+            <ProtectedRoute exact path='/cart' component={Cart} />
+            <Redirect to='/login' />
           </Switch>
         </BrowserRouter>
       </CartContext.Provider>
