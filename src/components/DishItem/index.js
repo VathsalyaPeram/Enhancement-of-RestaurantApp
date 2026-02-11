@@ -66,7 +66,6 @@ class DishItem extends Component {
               <button
                 type="button"
                 className="control-button"
-                data-testid="cart"
                 onClick={this.onDecrementQuantity}
               >
                 -
@@ -76,7 +75,6 @@ class DishItem extends Component {
 
               <button
                 type="button"
-                data-testid="cart"
                 className="control-button"
                 onClick={this.onIncrementQuantity}
               >
@@ -90,7 +88,6 @@ class DishItem extends Component {
           {dishAvailability > 0 && quantity > 0 && (
             <button
               type="button"
-              data-testid="cart"
               className="button add-to-cart-btn"
               onClick={this.onClickAddToCart}
             >

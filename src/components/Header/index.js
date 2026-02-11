@@ -1,67 +1,54 @@
 import {Link, withRouter} from 'react-router-dom'
 import Cookies from 'js-cookie'
+import {AiOutlineShoppingCart} from 'react-icons/ai'
 import CartContext from '../../context/CartContext'
 
 const Header = props => {
-  const {restaurantName, cartCount} = props
+  const {restaurantName, history} = props
 
   const onClickLogout = () => {
-    const {history} = props
     Cookies.remove('jwt_token')
     history.replace('/login')
   }
 
-  const onClickCart = () => {
-    const {history} = props
-    history.push('/cart')
-  }
-
-  const renderCartItemsCount = () => (
+  return (
     <CartContext.Consumer>
       {value => {
         const {cartList} = value
 
         return (
-          <div className="cart-icon-container">
-            <button type="button" className="cart-icon-button">
-              <img
-                src="https://assets.ccbp.in/frontend/react-js/fa-solid-cart-plus-for-restaurant-menu-img.png"
-                alt="cart"
-                className="cart-icon"
-                onClick={onClickCart}
-              />
-            </button>
-            <p className="cart-count">
-              {cartList.reduce((total, item) => total + item.quantity, 0)}
-            </p>
-          </div>
+          <nav className="nav-header">
+            <div className="nav-content">
+              <h1 className="restaurant-name">{restaurantName}</h1>
+
+              <div className="nav-menu">
+                <p className="my-orders-text">My Orders</p>
+
+                <Link to="/cart">
+                  <button
+                    type="button"
+                    className="cart-icon-button"
+                    data-testid="cart"
+                  >
+                    <AiOutlineShoppingCart />
+                  </button>
+                </Link>
+
+                <p className="cart-count">{cartList.length}</p>
+
+                <button
+                  type="button"
+                  className="logout-desktop-btn"
+                  onClick={onClickLogout}
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          </nav>
         )
       }}
     </CartContext.Consumer>
-  )
-  return (
-    <div className="header">
-      <div>
-        <h1 className="restaurant-name">{restaurantName}</h1>
-      </div>
-      <div className="cart-container">
-        <p>My Orders</p>
-        <div className="cart-icon-container">
-          <button
-            type="button"
-            className="logout-desktop-btn"
-            onClick={onClickLogout}
-          >
-            Logout
-          </button>
-          <li className="nav-menu-item-mobile">
-            <Link to="/cart" className="nav-link">
-              {renderCartItemsCount()}
-            </Link>
-          </li>
-        </div>
-      </div>
-    </div>
   )
 }
 

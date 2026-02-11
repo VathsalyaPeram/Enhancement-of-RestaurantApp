@@ -1,7 +1,7 @@
 import {useState, Component} from 'react'
 import {BrowserRouter, Route, Switch, Redirect} from 'react-router-dom'
 import Login from './components/Login'
-import Restaurant from './components/Restaurant'
+
 import Home from './components/Home'
 import Cart from './components/Cart'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -80,10 +80,9 @@ class App extends Component {
       >
         <BrowserRouter>
           <Switch>
-            <Route exact path="/login" component={Login} />
+            <Route path="/login" component={Login} />
             <ProtectedRoute exact path="/" component={Home} />
             <ProtectedRoute exact path="/cart" component={Cart} />
-            <Redirect to="/login" />
           </Switch>
         </BrowserRouter>
       </CartContext.Provider>

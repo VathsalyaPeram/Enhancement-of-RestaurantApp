@@ -57,9 +57,6 @@ const Home = () => {
     fetchRestaurantDetails()
   }, [])
 
-  const onClickCart = () => history.push('/cart')
-  const onClickRestaurantName = () => history.push('/')
-
   const renderLoadingView = () => (
     <div className="loader-container" data-testid="loader">
       <Loader type="ThreeDots" color="#f7931e" height={50} width={50} />
@@ -82,14 +79,7 @@ const Home = () => {
 
     return (
       <>
-        <Header
-          restaurantName={restaurantName}
-          restaurantImage={restaurantImage}
-          branchName={branchName}
-          onClickCart={onClickCart}
-          onClickRestaurantName={onClickRestaurantName}
-          cartCount={cartList.length}
-        />
+        <Header restaurantName={restaurantName} cartCount={cartList.length} />
 
         <Category
           categories={menuList}
