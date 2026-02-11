@@ -94,7 +94,8 @@ const Cart = () => (
                 <button
                   className="remove-all-btn"
                   type="button"
-                  onClick={removeAllCartItems}
+                  data-testid="cart"
+                  onClick={onClickRemoveAllBtn}
                 >
                   Remove All
                 </button>
@@ -102,13 +103,6 @@ const Cart = () => (
                 <ul>
                   {cartList.map(item => (
                     <li key={item.dishId}>
-                      <p className="dish-calories">{dishCalories} calories</p>
-                      <img
-                        src={item.dishImage}
-                        alt={item.dishName}
-                        className="dish-image"
-                      />
-
                       <button
                         type="button"
                         onClick={() => decrementCartItemQuantity(item.dishId)}

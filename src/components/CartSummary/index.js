@@ -4,11 +4,15 @@ const CartSummary = () => (
   <CartContext.Consumer>
     {value => {
       const {cartList, quantity, dishPrice} = value
-      const items = cartList.length
-      const totalPrice = cartList.reduce(
-        (acc, item) => acc + item.quantity * item.dishPrice,
-        0,
-      )
+
+      let totalPrice = 0
+      let items = 0
+
+      cartList.forEach(item => {
+        totalPrice += item.dishPrice * item.quantity
+        console.log(totalPrice)
+        items += item.quantity
+      })
       return (
         <div className="cart-summary-container">
           <div className="cart-summary-card">

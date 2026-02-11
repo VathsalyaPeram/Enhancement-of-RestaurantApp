@@ -35,9 +35,9 @@ class App extends Component {
     }
   }
 
-  removeCartItem = dish => {
+  removeCartItem = dishId => {
     this.setState(prevState => ({
-      cartList: prevState.cartList.filter(each => each.dish !== dish),
+      cartList: prevState.cartList.filter(each => each.dishId !== dishId),
     }))
   }
 
@@ -80,10 +80,10 @@ class App extends Component {
       >
         <BrowserRouter>
           <Switch>
-            <Route exact path='/login' component={Login} />
-            <ProtectedRoute exact path='/' component={Home} />
-            <ProtectedRoute exact path='/cart' component={Cart} />
-            <Redirect to='/login' />
+            <Route exact path="/login" component={Login} />
+            <ProtectedRoute exact path="/" component={Home} />
+            <ProtectedRoute exact path="/cart" component={Cart} />
+            <Redirect to="/login" />
           </Switch>
         </BrowserRouter>
       </CartContext.Provider>

@@ -74,6 +74,7 @@ const Home = () => {
     const activeMenu = menuList.find(
       each => each.menu_category === activeCategory,
     )
+    console.log(activeMenu)
 
     if (!activeMenu) {
       return null
@@ -99,7 +100,7 @@ const Home = () => {
         <ul className="category_dishes">
           {activeMenu.category_dishes.map(dish => (
             <DishItem
-              key={dish.dishId}
+              key={dish.dish_id}
               dishDetails={dish}
               addCartItem={addCartItem}
               cartList={cartList}

@@ -31,9 +31,9 @@ const Header = props => {
                 onClick={onClickCart}
               />
             </button>
-            {cartCount > 0 && (
-              <span className="cart-count">{cartList.length}</span>
-            )}
+            <p className="cart-count">
+              {cartList.reduce((total, item) => total + item.quantity, 0)}
+            </p>
           </div>
         )
       }}
@@ -41,11 +41,12 @@ const Header = props => {
   )
   return (
     <div className="header">
-      <h1>{restaurantName}</h1>
+      <div>
+        <h1 className="restaurant-name">{restaurantName}</h1>
+      </div>
       <div className="cart-container">
         <p>My Orders</p>
         <div className="cart-icon-container">
-          <span className="cart-count">{cartCount}</span>
           <button
             type="button"
             className="logout-desktop-btn"
